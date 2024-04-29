@@ -323,6 +323,8 @@ void compute_slip(const double* X, double steer, double* sr, double* sa)
 *   \brief    TODO : 29.04.24
 */
 void tire_forces(const double* tau_x, const double* slip_angle, const double* fz, const double* gamma, const double* mu, double* Fxp, double* Fyp, double* dFz)
+/* compute the tire forces (tau_x is the longitudinal slip, slip_angle is the slip angle, fz is the vertical tire load, gamma is the inclination angle, mu is the friction coefficient,
+    Fxp is the longitudinal tire force, Fyp is the lateral tire force, dFz is the vertical tire load changes) */
 {
     double tau_shift[4];    // tire longitudinal slip
     double slip_angle_shift[4]; // tire slip angle
