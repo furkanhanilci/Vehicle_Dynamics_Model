@@ -320,20 +320,21 @@ void compute_slip(const double* X, double steer, double* sr, double* sa)
 /**
 *   \fn        tire_forces
 *   \brief     TODO
+*   \brief    TODO : 29.04.24
 */
 void tire_forces(const double* tau_x, const double* slip_angle, const double* fz, const double* gamma, const double* mu, double* Fxp, double* Fyp, double* dFz)
 {
-    double tau_shift[4];
-    double slip_angle_shift[4];
-    double Fxp0[4];
-    double Fyp0[4];
-    double G_xa[4];
-    double G_yk[4];
+    double tau_shift[4];    // tire longitudinal slip
+    double slip_angle_shift[4]; // tire slip angle
+    double Fxp0[4]; // longitudinal tire force
+    double Fyp0[4]; // lateral tire force
+    double G_xa[4]; // longitudinal force scaling factor
+    double G_yk[4]; // lateral force scaling factor
 
-    for (int k = 0; k < 4; ++k)
+    for (int k = 0; k < 4; ++k) // for each wheel
     {
-        double dfz = (fz[k] - params::fz0[k]) / params::fz0[k];
-        dFz[k] = dfz;
+        double dfz = (fz[k] - params::fz0[k]) / params::fz0[k];   // compute normalized vertical tire load changes
+        dFz[k] = dfz;   // set the vertical tire load changes
 
         double S_Hx = params::tires::p_Hx1;
         tau_shift[k] = tau_x[k] + S_Hx;
