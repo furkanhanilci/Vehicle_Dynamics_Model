@@ -2,6 +2,7 @@
 
 
 - [Parameters](#parameters)
+- [Requirements](#requirements)
 - [How to Run](#how-to-run)
 
 
@@ -91,6 +92,28 @@
 
 - **Aligning Moment Factors (Nested in params::tires):**  Aligning moments are generated when the tire is subjected to lateral forces during cornering. Aligning moment factors describe how these moments vary with changes in slip angle and load. Proper alignment and tuning of aligning moment factors are essential for optimizing steering response and cornering stability.
 
+#### Requirements
+1. ** libboost-python-dev:**
+   - Install the libboost-python-dev package using the following command:
+     ```
+     sudo apt-get update
+     sudo apt-get install libboost-python-dev
+     ```
+2. ** Confirm Library Location:**
+   - Confirm the location of the library using the following command:
+     ```
+     locate libboost_python38.so
+     ```
+     ```
+     export LD_LIBRARY_PATH=$LD_LIBRARY_PATH:/path/to/lib
+     ```
+     
+3. ** Check Version Mismatch:**
+   - Check for version mismatch using the following command:
+     ```
+     ls /usr/lib/x86_64-linux-gnu/ | grep libboost_python
+     ```
+     
 #### How to Run
 
 1. **Clone the Repository:**
