@@ -25,13 +25,13 @@ def get_simulation(x=0, vx=10, y=0, vy=0, z=0.715, vz=0, r=0, vr=0, p=0, vp=0, y
     :param frequency:   Frequency of the sinusoidal steering angle
     :param sim_duration:    Duration of the simulation in milliseconds
     :return:    _run: numpy.ndarray of the vehicle state at each timestep
-    :param:sim_dt:    Time step used in the simulation, assumed to be 1 ms
-    :param:state:     Array representing the initial state of the vehicle, including position, velocity, and orientation.
-    :param:controls:  Array storing the control inputs for each time step, including throttle and steering angle.
-    :param:t:         Array representing time points throughout the simulation, generated using np.linspace.
-    :param:delta:     Array representing the sinusoidal steering angle, calculated based on amplitude, frequency, and t.
-    :param:mu:        Array representing the friction coefficients for the vehicle's wheels.
-    :param:_run:      Array storing the simulation results, including vehicle state variables such as position, velocity, and orientation.
+    :param sim_dt:    Time step used in the simulation, assumed to be 1 ms
+    :param state:     Array representing the initial state of the vehicle, including position, velocity, and orientation.
+    :param controls:  Array storing the control inputs for each time step, including throttle and steering angle.
+    :param t:         Array representing time points throughout the simulation, generated using np.linspace.
+    :param delta:     Array representing the sinusoidal steering angle, calculated based on amplitude, frequency, and t.
+    :param mu:        Array representing the friction coefficients for the vehicle's wheels.
+    :param _run:      Array storing the simulation results, including vehicle state variables such as position, velocity, and orientation.
 
     """
 
