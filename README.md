@@ -104,7 +104,7 @@
      ```
      python3 setup.py build
      python3 setup.py install
-   ```
+     ```
    
 4. **Run the Simulation File:**
    - Run the simulation file to execute the vehicle dynamics model:
