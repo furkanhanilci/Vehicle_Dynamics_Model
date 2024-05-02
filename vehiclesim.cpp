@@ -336,12 +336,12 @@ void tire_forces(const double* tau_x, const double* slip_angle, const double* fz
     for (int k = 0; k < 4; ++k) // for each wheel
     {
         double dfz = (fz[k] - params::fz0[k]) / params::fz0[k];   // compute normalized vertical tire load changes
-        dFz[k] = dfz;   // set the vertical tire load changes
+        dFz[k] = dfz;   // vertical tire load on the current wheel 'k'; it represents the force exerted by the vehicle's mass on the wheel
 
-        double S_Hx = params::tires::p_Hx1;
-        tau_shift[k] = tau_x[k] + S_Hx;
-        double C_x = params::tires::p_Cx1;
-        double mu_x = mu[k] * (params::tires::p_Dx1 + params::tires::p_Dx2*dfz);
+        double S_Hx = params::tires::p_Hx1; // 'S_Hx' is the longitudinal shift of the longitudinal force peak value point B
+        tau_shift[k] = tau_x[k] + S_Hx; // compute the longitudinal tire slip
+        double C_x = params::tires::p_Cx1;  // 'C_x' is the longitudinal stiffness factor for the tire
+        double mu_x = mu[k] * (params::tires::p_Dx1 + params::tires::p_Dx2*dfz);    // 'mu_x' is the longitudinal friction coefficient considering load changes
         double D_x = mu_x*fz[k];
         double E_x = (params::tires::p_Ex1 + params::tires::p_Ex2*dfz + params::tires::p_Ex3*dfz*dfz)*(1 - params::tires::p_Ex4*sign(tau_shift[k]));
         double K_xk = fz[k] * (params::tires::p_Kx1 + params::tires::p_Kx2*dfz)*exp(params::tires::p_Kx3*dfz);
@@ -563,7 +563,7 @@ std::vector<state> simulate(state X0, std::vector<ctrl> controls, double* mu, do
     out.reserve(controls.size());
     out.push_back(X0);
     state curState = X0;
-    for (int i = 0; i < controls.size(); ++i)
+    for (std::vector<ctrl>::size_type i = 0; i < controls.size(); ++i)
     {
         curState = rk4(curState, controls[i], mu, dt, _helper);
         out.push_back(curState);
