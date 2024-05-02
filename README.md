@@ -1,5 +1,12 @@
 # Vehicle_Dynamics_Model
 
+
+- [Parameters](#parameters)
+- [How to Run](#how-to-run)
+
+
+
+
 #### Parameters 
 
 - **Gravity (gravity):** Represents the gravitational acceleration, commonly denoted as 'g', measured in meters per second squared (m/s²). It affects the weight of the vehicle and influences its dynamics, especially during acceleration, braking, and cornering.
@@ -84,3 +91,24 @@
 
 - **Aligning Moment Factors (Nested in params::tires):**  Aligning moments are generated when the tire is subjected to lateral forces during cornering. Aligning moment factors describe how these moments vary with changes in slip angle and load. Proper alignment and tuning of aligning moment factors are essential for optimizing steering response and cornering stability.
 
+#### How to Run
+
+1. **Clone the Repository:**
+   - Clone the repository to your local machine using the following command:
+     ```
+     git clone https://github.com/furkanhanilci/Vehicle_Dynamics_Model.git
+     ```
+2. **Navigate to the Directory:**
+3. **Run the setup.py file:**
+   - Run the setup.py file to install the required dependencies:
+     ```
+     python3 setup.py build
+     python3 setup.py install
+   ```
+   
+4. **Run the Simulation File:**
+   - Run the simulation file to execute the vehicle dynamics model:
+     ```
+     python3 simulation.py  
+     ```    
+     
