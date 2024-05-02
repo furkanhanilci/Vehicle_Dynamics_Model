@@ -1,5 +1,5 @@
 import numpy
-import vehiclesim
+import vehiclemodel
 
 # ---------------------------------------------------------------------------------------
 # Simulator
@@ -33,7 +33,7 @@ def get_simulation(x=0, vx=0, y=0, vy=0, z=0.715, vz=0, r=0, vr=0, p=0, vp=0, ya
     
     # Run sim
     # Note: sim columns: dt x vx y vy z vz r vr p vp yaw vyaw om_fl om_fr om_rl om_rr ax ay sr1 sr2 sr3 sr4 sa1 sa2 sa3 sa4
-    _run = vehiclesim.run(sim_duration, sim_dt, state, controls, mu)        
+    _run = vehiclemodel.run(sim_duration, sim_dt, state, controls, mu)        
 
     # Drop the first column (time)
     _run = _run[:, 1:]
