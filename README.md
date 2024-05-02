@@ -69,3 +69,18 @@
 - **Braking Steering Angle (delta_braq):** Indicates the steering angle applied during braking maneuvers, calculated based on a formula involving the collision direction. It quantifies the steering input required for effective braking and collision avoidance.
 
 - **Tire Parameters (Nested in params::tires):** Represents a set of parameters related to the vehicle's tires, including shape factors, peak values, variations with load, camber, and slip for both longitudinal and lateral forces, longitudinal and lateral slip stiffness, and aligning moment factors and their variations. These parameters collectively define the tire behavior and influence the vehicle's traction, handling, and stability.
+
+- **Shape Factors (Nested in params::tires):** These factors describe the physical shape of the tire, including its tread pattern, sidewall stiffness, and overall geometry. The shape of the tire influences its contact patch with the road surface, which affects traction, grip, and handling characteristics.
+
+- **Peak Values (Nested in params::tires):** Peak values refer to the maximum achievable levels of tire performance in various aspects, such as traction, cornering grip, and braking force. These values are often determined through testing and represent the tire's optimal performance under specific conditions.
+
+- **Variations with Load (Nested in params::tires):** Tire behavior varies depending on the load imposed on them. Load variations affect parameters like tire pressure, contact patch size, and deformation characteristics. Understanding how tires respond to different loads is essential for maintaining optimal performance and safety.
+
+- **Camber Variation (Nested in params::tires):** Camber refers to the angle of the tire relative to the vertical axis of the vehicle. Camber variation describes how tire performance changes with different camber angles. Proper camber adjustment is critical for maximizing tire contact with the road surface and optimizing handling and cornering grip.
+
+- **Slip Variation (Nested in params::tires):** Slip refers to the difference between the speed of the tire's rotation and the speed of the vehicle. Longitudinal slip occurs during acceleration or braking, while lateral slip occurs during cornering. Understanding how tire characteristics vary with slip is crucial for predicting vehicle behavior and optimizing traction and stability.
+
+- **Longitudinal and Lateral Slip Stiffness (Nested in params::tires):** Slip stiffness describes how tire forces vary with changes in slip. Longitudinal slip stiffness relates to acceleration and braking forces, while lateral slip stiffness relates to cornering forces. High slip stiffness indicates a more responsive tire with better grip and handling capabilities.
+
+- **Aligning Moment Factors (Nested in params::tires):**  Aligning moments are generated when the tire is subjected to lateral forces during cornering. Aligning moment factors describe how these moments vary with changes in slip angle and load. Proper alignment and tuning of aligning moment factors are essential for optimizing steering response and cornering stability.
+
