@@ -98,15 +98,15 @@
      ```
      git clone https://github.com/furkanhanilci/Vehicle_Dynamics_Model.git
      ```
-2. **Navigate to the Directory:**
-3. **Run the setup.py file:**
+
+2. **Run the setup.py file:**
    - Run the setup.py file to install the required dependencies:
      ```
      python3 setup.py build
      python3 setup.py install
      ```
    
-4. **Run the Simulation File:**
+3. **Run the Simulation File:**
    - Run the simulation file to execute the vehicle dynamics model:
      ```
      python3 simulation.py  
