@@ -342,49 +342,49 @@ void tire_forces(const double* tau_x, const double* slip_angle, const double* fz
         tau_shift[k] = tau_x[k] + S_Hx; // compute the longitudinal tire slip
         double C_x = params::tires::p_Cx1;  // 'C_x' is the longitudinal stiffness factor for the tire
         double mu_x = mu[k] * (params::tires::p_Dx1 + params::tires::p_Dx2*dfz);    // 'mu_x' is the longitudinal friction coefficient considering load changes
-        double D_x = mu_x*fz[k];
-        double E_x = (params::tires::p_Ex1 + params::tires::p_Ex2*dfz + params::tires::p_Ex3*dfz*dfz)*(1 - params::tires::p_Ex4*sign(tau_shift[k]));
-        double K_xk = fz[k] * (params::tires::p_Kx1 + params::tires::p_Kx2*dfz)*exp(params::tires::p_Kx3*dfz);
-        double B_x = K_xk / (C_x*D_x);
-        double S_Vx = fz[k] * (params::tires::p_Vx1 + params::tires::p_Vx2*dfz);
+        double D_x = mu_x*fz[k];    // 'D_x' is the longitudinal friction force
+        double E_x = (params::tires::p_Ex1 + params::tires::p_Ex2*dfz + params::tires::p_Ex3*dfz*dfz)*(1 - params::tires::p_Ex4*sign(tau_shift[k]));    // 'E_x' is the longitudinal curvature factor
+        double K_xk = fz[k] * (params::tires::p_Kx1 + params::tires::p_Kx2*dfz)*exp(params::tires::p_Kx3*dfz);  // 'K_xk' is the longitudinal slip stiffness
+        double B_x = K_xk / (C_x*D_x);  // 'B_x' is the longitudinal stiffness factor
+        double S_Vx = fz[k] * (params::tires::p_Vx1 + params::tires::p_Vx2*dfz);    // 'S_Vx' is the vertical shift of the longitudinal force peak value point B
 
-        Fxp0[k] = D_x*sin(C_x*atan(B_x*tau_shift[k] - E_x*(B_x*tau_shift[k] - atan(B_x*tau_shift[k])))) + S_Vx;
+        Fxp0[k] = D_x*sin(C_x*atan(B_x*tau_shift[k] - E_x*(B_x*tau_shift[k] - atan(B_x*tau_shift[k])))) + S_Vx;   // compute the longitudinal tire force
 
-        double S_Hy = (params::tires::p_Hy1 + params::tires::p_Hy2*dfz) + params::tires::p_Hy3*gamma[k];
-        slip_angle_shift[k] = slip_angle[k] + S_Hy;
+        double S_Hy = (params::tires::p_Hy1 + params::tires::p_Hy2*dfz) + params::tires::p_Hy3*gamma[k];    // 'S_Hy' is the lateral shift of the lateral force peak value point B
+        slip_angle_shift[k] = slip_angle[k] + S_Hy; // compute the lateral tire slip
 
-        double C_y = params::tires::p_Cy1;
-        double mu_y = mu[k] * (params::tires::p_Dy1 + params::tires::p_Dy2*dfz)*(1 - params::tires::p_Dy3*gamma[k] * gamma[k]);
-        double D_y = mu_y*fz[k];
-        double E_y = (params::tires::p_Ey1 + params::tires::p_Ey2*dfz)*(1 - (params::tires::p_Ey3 + params::tires::p_Ey4*gamma[k] * sign(slip_angle_shift[k])));
-        double K_ya0 = params::tires::p_Ky1*params::fz0[k] * sin(2 * atan(fz[k] / (params::tires::p_Ky2*params::fz0[k])));
-        double K_ya = K_ya0*(1 - params::tires::p_Ky3*gamma[k] * gamma[k]);
-        double B_y = K_ya / (C_y*D_y);
-        double S_Vy = fz[k] * ((params::tires::p_Vy1 + params::tires::p_Vy2*dfz) + (params::tires::p_Vy3 + params::tires::p_Vy4*dfz)*gamma[k]);
+        double C_y = params::tires::p_Cy1;  // 'C_y' is the lateral stiffness factor for the tire
+        double mu_y = mu[k] * (params::tires::p_Dy1 + params::tires::p_Dy2*dfz)*(1 - params::tires::p_Dy3*gamma[k] * gamma[k]);   // 'mu_y' is the lateral friction coefficient considering load and inclination changes
+        double D_y = mu_y*fz[k];    // 'D_y' is the lateral friction force
+        double E_y = (params::tires::p_Ey1 + params::tires::p_Ey2*dfz)*(1 - (params::tires::p_Ey3 + params::tires::p_Ey4*gamma[k] * sign(slip_angle_shift[k])));    // 'E_y' is the lateral curvature factor
+        double K_ya0 = params::tires::p_Ky1*params::fz0[k] * sin(2 * atan(fz[k] / (params::tires::p_Ky2*params::fz0[k])));  // 'K_ya0' is the lateral stiffness factor
+        double K_ya = K_ya0*(1 - params::tires::p_Ky3*gamma[k] * gamma[k]);   // 'K_ya' is the lateral stiffness factor considering inclination changes
+        double B_y = K_ya / (C_y*D_y);  // 'B_y' is the lateral stiffness factor
+        double S_Vy = fz[k] * ((params::tires::p_Vy1 + params::tires::p_Vy2*dfz) + (params::tires::p_Vy3 + params::tires::p_Vy4*dfz)*gamma[k]);   // 'S_Vy' is the vertical shift of the lateral force peak value point B
 
-        Fyp0[k] = D_y*sin(C_y*atan(B_y*slip_angle_shift[k] - E_y*(B_y*slip_angle_shift[k] - atan(B_y*slip_angle_shift[k])))) + S_Vy;
+        Fyp0[k] = D_y*sin(C_y*atan(B_y*slip_angle_shift[k] - E_y*(B_y*slip_angle_shift[k] - atan(B_y*slip_angle_shift[k])))) + S_Vy;    // compute the lateral tire force
 
-        double B_xa = params::tires::r_Bx1*cos(atan(params::tires::r_Bx2*tau_x[k]));
-        double C_xa = params::tires::r_Cx1;
-        double E_xa = params::tires::r_Ex1 + params::tires::r_Ex2*dfz;
-        double S_Hxa = params::tires::r_Hx1;
+        double B_xa = params::tires::r_Bx1*cos(atan(params::tires::r_Bx2*tau_x[k]));    // compute the longitudinal stiffness factor
+        double C_xa = params::tires::r_Cx1; // compute the longitudinal stiffness factor
+        double E_xa = params::tires::r_Ex1 + params::tires::r_Ex2*dfz;  // compute the longitudinal curvature factor
+        double S_Hxa = params::tires::r_Hx1;    // compute the longitudinal shift of the longitudinal force peak value point B
 
-        slip_angle_shift[k] = slip_angle[k] + S_Hxa;
+        slip_angle_shift[k] = slip_angle[k] + S_Hxa;    // compute the longitudinal tire slip
 
-        G_xa[k] = (cos(C_xa*atan(B_xa*slip_angle_shift[k] - E_xa*(B_xa*slip_angle_shift[k] - atan(B_xa*slip_angle_shift[k]))))) / (cos(C_xa*atan(B_xa*S_Hxa - E_xa*(B_xa*S_Hxa - atan(B_xa*S_Hxa)))));
+        G_xa[k] = (cos(C_xa*atan(B_xa*slip_angle_shift[k] - E_xa*(B_xa*slip_angle_shift[k] - atan(B_xa*slip_angle_shift[k]))))) / (cos(C_xa*atan(B_xa*S_Hxa - E_xa*(B_xa*S_Hxa - atan(B_xa*S_Hxa)))));  // compute the longitudinal force scaling factor
 
-        Fxp[k] = G_xa[k] * Fxp0[k];
+        Fxp[k] = G_xa[k] * Fxp0[k];   // compute the longitudinal tire force
 
-        double B_yk = params::tires::r_By1*cos(atan(params::tires::r_By2*(slip_angle[k] - params::tires::r_By3)));
-        double C_yk = params::tires::r_Cy1;
-        double E_yk = params::tires::r_Ey1 + params::tires::r_Ey2*dfz;
-        double S_Hyk = params::tires::r_Hy1 + params::tires::r_Hy2*dfz;
-        double D_Vyk = mu_y*fz[k] * (params::tires::r_Vy1 + params::tires::r_Vy2*dfz + params::tires::r_Vy3*gamma[k])*cos(atan(params::tires::r_Vy4*slip_angle[k]));
-        double S_Vyk = D_Vyk*sin(params::tires::r_Vy5*atan(params::tires::r_Vy6*tau_x[k]));
+        double B_yk = params::tires::r_By1*cos(atan(params::tires::r_By2*(slip_angle[k] - params::tires::r_By3)));  // compute the lateral stiffness factor
+        double C_yk = params::tires::r_Cy1; // compute the lateral stiffness factor
+        double E_yk = params::tires::r_Ey1 + params::tires::r_Ey2*dfz;  // compute the lateral curvature factor
+        double S_Hyk = params::tires::r_Hy1 + params::tires::r_Hy2*dfz;   // compute the lateral shift of the lateral force peak value point B
+        double D_Vyk = mu_y*fz[k] * (params::tires::r_Vy1 + params::tires::r_Vy2*dfz + params::tires::r_Vy3*gamma[k])*cos(atan(params::tires::r_Vy4*slip_angle[k]));    // compute the lateral friction force
+        double S_Vyk = D_Vyk*sin(params::tires::r_Vy5*atan(params::tires::r_Vy6*tau_x[k]));   // compute the lateral shift of the lateral force peak value point B
 
-        tau_shift[k] = tau_x[k] + S_Hyk;
-        G_yk[k] = (cos(C_yk*atan(B_yk*tau_shift[k] - E_yk*(B_yk*tau_shift[k] - atan(B_yk*tau_shift[k]))))) / (cos(C_yk*atan(B_yk*S_Hyk - E_yk*(B_yk*S_Hyk - atan(B_yk*S_Hyk)))));
-        Fyp[k] = G_yk[k] * Fyp0[k] + S_Vyk;
+        tau_shift[k] = tau_x[k] + S_Hyk;    // compute the lateral tire slip
+        G_yk[k] = (cos(C_yk*atan(B_yk*tau_shift[k] - E_yk*(B_yk*tau_shift[k] - atan(B_yk*tau_shift[k]))))) / (cos(C_yk*atan(B_yk*S_Hyk - E_yk*(B_yk*S_Hyk - atan(B_yk*S_Hyk)))));   // compute the lateral force scaling factor
+        Fyp[k] = G_yk[k] * Fyp0[k] + S_Vyk;   // compute the lateral tire force
     }
 }
 
@@ -392,22 +392,22 @@ void tire_forces(const double* tau_x, const double* slip_angle, const double* fz
 *   \fn        compute_susp_forces
 *   \brief     TODO
 */
-void compute_susp_forces(const double* X, double* F_susp, double* Delta_z_susp, double* d_z_susp)
+void compute_susp_forces(const double* X, double* F_susp, double* Delta_z_susp, double* d_z_susp)   // compute the suspension forces
 {
-    for (int k = 0; k < 2; ++k)
+    for (int k = 0; k < 2; ++k) // for each front wheel
     {
-        double sgn = (k % 2) ? -1. : 1.;
-        Delta_z_susp[k] = sgn*params::lw / 2 * sin(X[6]) - params::lf*cos(X[6])*sin(X[8]);
-        d_z_susp[k] = sgn*params::lw / 2 * X[7] * cos(X[6]) + params::lf*X[7] * sin(X[6])*sin(X[8]) - params::lf*X[9] * cos(X[6]) * cos(X[8]);
-        F_susp[k] = -params::k_susp_f*Delta_z_susp[k] - params::d_susp_f*d_z_susp[k];
+        double sgn = (k % 2) ? -1. : 1.;    // compute the sign of the wheel
+        Delta_z_susp[k] = sgn*params::lw / 2 * sin(X[6]) - params::lf*cos(X[6])*sin(X[8]);  // compute the vertical displacement of the suspension
+        d_z_susp[k] = sgn*params::lw / 2 * X[7] * cos(X[6]) + params::lf*X[7] * sin(X[6])*sin(X[8]) - params::lf*X[9] * cos(X[6]) * cos(X[8]);  // compute the vertical velocity of the suspension
+        F_susp[k] = -params::k_susp_f*Delta_z_susp[k] - params::d_susp_f*d_z_susp[k];   // compute the suspension force
     }
 
     for (int k = 2; k < 4; ++k)
     {
-        double sgn = (k % 2) ? -1. : 1.;
-        Delta_z_susp[k] = sgn*params::lw / 2 * sin(X[6]) + params::lr*cos(X[6])*sin(X[8]);
-        d_z_susp[k] = sgn*params::lw / 2 * X[7] * cos(X[6]) - params::lr*X[7] * sin(X[6])*sin(X[8]) + params::lr*X[9] * cos(X[6]) * cos(X[8]);
-        F_susp[k] = -params::k_susp_f*Delta_z_susp[k] - params::d_susp_f*d_z_susp[k];
+        double sgn = (k % 2) ? -1. : 1.;    // compute the sign of the wheel
+        Delta_z_susp[k] = sgn*params::lw / 2 * sin(X[6]) + params::lr*cos(X[6])*sin(X[8]);  // compute the vertical displacement of the suspension
+        d_z_susp[k] = sgn*params::lw / 2 * X[7] * cos(X[6]) - params::lr*X[7] * sin(X[6])*sin(X[8]) + params::lr*X[9] * cos(X[6]) * cos(X[8]);  // compute the vertical velocity of the suspension
+        F_susp[k] = -params::k_susp_f*Delta_z_susp[k] - params::d_susp_f*d_z_susp[k];   // compute the suspension force
     }
 }
 
@@ -415,13 +415,13 @@ void compute_susp_forces(const double* X, double* F_susp, double* Delta_z_susp, 
 *   \fn        force_fame_change
 *   \brief     TODO
 */
-void force_fame_change(const double* Fxp, const double* Fyp, const double* Fz, const double* X, double steer, double* Fx, double* Fy)
+void force_fame_change(const double* Fxp, const double* Fyp, const double* Fz, const double* X, double steer, double* Fx, double* Fy)   // compute the forces in the vehicle frame
 {
-    double delta_steer[4] = { steer, steer, 0, 0 };
-    for (int k = 0; k < 4; ++k)
+    double delta_steer[4] = { steer, steer, 0, 0 };   // compute the steering angle of the wheels
+    for (int k = 0; k < 4; ++k) // for each wheel
     {
-        Fx[k] = (Fxp[k] * cos(delta_steer[k]) - Fyp[k] * sin(delta_steer[k]))*cos(X[8]) - Fz[k] * sin(X[8]);
-        Fy[k] = (Fxp[k] * cos(delta_steer[k]) - Fyp[k] * sin(delta_steer[k]))*sin(X[6])*sin(X[8]) + (Fyp[k] * cos(delta_steer[k]) + Fxp[k] * sin(delta_steer[k]))*cos(X[6]) - Fz[k] * sin(X[6])*cos(X[8]);
+        Fx[k] = (Fxp[k] * cos(delta_steer[k]) - Fyp[k] * sin(delta_steer[k]))*cos(X[8]) - Fz[k] * sin(X[8]);    // compute the longitudinal force
+        Fy[k] = (Fxp[k] * cos(delta_steer[k]) - Fyp[k] * sin(delta_steer[k]))*sin(X[6])*sin(X[8]) + (Fyp[k] * cos(delta_steer[k]) + Fxp[k] * sin(delta_steer[k]))*cos(X[6]) - Fz[k] * sin(X[6])*cos(X[8]);  // compute the lateral force
     }
 }
 
@@ -429,147 +429,147 @@ void force_fame_change(const double* Fxp, const double* Fyp, const double* Fz, c
 *   \fn        comp_derivative
 *   \brief     TODO
 */
-void comp_derivative(const double* X, const double* u, const double* mu, double* dX)
+void comp_derivative(const double* X, const double* u, const double* mu, double* dX)    // compute the derivative of the state
 {
-    double tau_x[4];
-    double slip_angle[4];
+    double tau_x[4];    // longitudinal slip
+    double slip_angle[4];   // slip angle
 
-    double steer = u[4];
+    double steer = u[4];    // steering angle
 
-    compute_slip(X, steer, tau_x, slip_angle);
+    compute_slip(X, steer, tau_x, slip_angle);  // compute the slip ratio and slip angle
 
-    double Delta_F_susp[4];
-    double Delta_z_susp[4];
-    double d_z_susp[4];
-    compute_susp_forces(X, Delta_F_susp, Delta_z_susp, d_z_susp);
+    double Delta_F_susp[4]; // suspension forces
+    double Delta_z_susp[4]; // vertical displacement of the suspension
+    double d_z_susp[4]; // vertical velocity of the suspension
+    compute_susp_forces(X, Delta_F_susp, Delta_z_susp, d_z_susp);   // compute the suspension forces
 
-    double Fz[4];
-    for (int k = 0; k < 4; ++k)
-        Fz[k] = params::fz0[k] + Delta_F_susp[k];
+    double Fz[4];   // vertical tire load
+    for (int k = 0; k < 4; ++k) // for each wheel
+        Fz[k] = params::fz0[k] + Delta_F_susp[k];   // compute the vertical tire load
 
-    double gamma[4] = { 0,0,0,0 };
-    double Fxp[4];
-    double Fyp[4];
-    double dFz[4];
-    tire_forces(tau_x, slip_angle, Fz, gamma, mu, Fxp, Fyp, dFz);
+    double gamma[4] = { 0,0,0,0 };  // inclination angle
+    double Fxp[4];  // longitudinal tire force
+    double Fyp[4];  // lateral tire force
+    double dFz[4];  // vertical tire load changes
+    tire_forces(tau_x, slip_angle, Fz, gamma, mu, Fxp, Fyp, dFz);   // compute the tire forces
 
 
-    double Fx[4];
-    double Fy[4];
-    force_fame_change(Fxp, Fyp, Fz, X, steer, Fx, Fy);
+    double Fx[4];   // longitudinal force
+    double Fy[4];   // lateral force
+    force_fame_change(Fxp, Fyp, Fz, X, steer, Fx, Fy);  // compute the forces in the vehicle frame
 
-    double F_aero = params::aero_coef * X[1] * X[1];
+    double F_aero = params::aero_coef * X[1] * X[1];    // compute the aerodynamic force
 
-    double sFx = 0;
-    double sFy = 0;
-    for (int k = 0; k < 4; ++k)
+    double sFx = 0; // sum of the longitudinal forces
+    double sFy = 0; // sum of the lateral forces
+    for (int k = 0; k < 4; ++k) // for each wheel
     {
-        sFx += Fx[k];
-        sFy += Fy[k];
+        sFx += Fx[k];   // sum the longitudinal forces
+        sFy += Fy[k];   // sum the lateral forces
     }
 
-    dX[0] = X[1] * cos(X[10]) - X[3] * sin(X[10]);
-    dX[1] = X[11] * X[3] - X[9] * X[5] + (Fx[0] + Fx[1] + Fx[2] + Fx[3] - F_aero) / params::mass;
-    dX[2] = X[1] * sin(X[10]) + X[3] * cos(X[10]);
-    dX[3] = -X[11] * X[1] + X[7] * X[5] + (Fy[0] + Fy[1] + Fy[2] + Fy[3]) / params::mass;
-    dX[4] = X[5];
-    dX[5] = 0;
-    dX[6] = X[7];
-    dX[7] = 1. / (params::Ix)*(params::lw / 2 * (Delta_F_susp[0] + Delta_F_susp[2] - Delta_F_susp[1] - Delta_F_susp[3]) + X[4] * sFy);
-    dX[8] = X[9];
-    dX[9] = 1 / params::Iy *(-params::lf*(Delta_F_susp[0] + Delta_F_susp[1]) + params::lr*(Delta_F_susp[2] + Delta_F_susp[3]) - X[4] * sFx);
-    dX[10] = X[11];
-    dX[11] = 1. / params::Iz*(params::lf*(Fy[0] + Fy[1]) - params::lr*(Fy[2] + Fy[3]) + params::lw / 2.*(Fx[1] + Fx[3] - Fx[0] - Fx[2]));
-    for (int k = 0; k < 4; ++k)
-        dX[k + 12] = (u[k] - params::r_eff*Fxp[k]) / params::Ir;
+    dX[0] = X[1] * cos(X[10]) - X[3] * sin(X[10]);  // compute the x position derivative
+    dX[1] = X[11] * X[3] - X[9] * X[5] + (Fx[0] + Fx[1] + Fx[2] + Fx[3] - F_aero) / params::mass;   // compute the x velocity derivative
+    dX[2] = X[1] * sin(X[10]) + X[3] * cos(X[10]);  // compute the y position derivative
+    dX[3] = -X[11] * X[1] + X[7] * X[5] + (Fy[0] + Fy[1] + Fy[2] + Fy[3]) / params::mass;   // compute the y velocity derivative
+    dX[4] = X[5];   // compute the z position derivative
+    dX[5] = 0;  // compute the z velocity derivative
+    dX[6] = X[7];   // compute the roll derivative
+    dX[7] = 1. / (params::Ix)*(params::lw / 2 * (Delta_F_susp[0] + Delta_F_susp[2] - Delta_F_susp[1] - Delta_F_susp[3]) + X[4] * sFy);  // compute the roll velocity derivative
+    dX[8] = X[9];   // compute the pitch derivative
+    dX[9] = 1 / params::Iy *(-params::lf*(Delta_F_susp[0] + Delta_F_susp[1]) + params::lr*(Delta_F_susp[2] + Delta_F_susp[3]) - X[4] * sFx);    // compute the pitch velocity derivative
+    dX[10] = X[11]; // compute the yaw derivative
+    dX[11] = 1. / params::Iz*(params::lf*(Fy[0] + Fy[1]) - params::lr*(Fy[2] + Fy[3]) + params::lw / 2.*(Fx[1] + Fx[3] - Fx[0] - Fx[2]));   // compute the yaw velocity derivative
+    for (int k = 0; k < 4; ++k) // for each wheel
+        dX[k + 12] = (u[k] - params::r_eff*Fxp[k]) / params::Ir;    // compute the angular velocity derivative
 }
 
 /**
 *   \fn        propagate
 *   \brief     TODO
 */
-void propagate(const double* X, const double* dX, double h, double* Xnew)
+void propagate(const double* X, const double* dX, double h, double* Xnew)   // propagate the state
 {
-    for (int i = 0; i < STATE_DIM; ++i)
-        Xnew[i] = X[i] + dX[i] * h;
+    for (int i = 0; i < STATE_DIM; ++i) // for each state variable
+        Xnew[i] = X[i] + dX[i] * h; // compute the new state variable
 
-    for (int k = 0; k < 4; ++k)
-        Xnew[k + 12] = std::fmax(std::fmin(Xnew[k + 12], params::V_max / params::r_eff), 0.);
-    Xnew[1] = std::fmax(std::fmin(Xnew[1], params::V_max), 0.);
+    for (int k = 0; k < 4; ++k) // for each wheel
+        Xnew[k + 12] = std::fmax(std::fmin(Xnew[k + 12], params::V_max / params::r_eff), 0.);   // compute the new angular velocity
+    Xnew[1] = std::fmax(std::fmin(Xnew[1], params::V_max), 0.);   // compute the new velocity
 }
 
 /**
 *   \fn        rk4
 *   \brief     Applies a fourth-order Runge-Kutta approach to approximate the solution of the differential equations.
 */
-state rk4(const state &X, const ctrl &u, const double* mu, double h, helper_t& helper)
+state rk4(const state &X, const ctrl &u, const double* mu, double h, helper_t& helper)  // apply the fourth-order Runge-Kutta method
 {
-    state Xnew;
-    double* Xtmp = (double*)malloc(sizeof(double)*STATE_DIM);
-    double* dX1 = (double*)malloc(sizeof(double)*STATE_DIM);
-    double* dX2 = (double*)malloc(sizeof(double)*STATE_DIM);
-    double* dX3 = (double*)malloc(sizeof(double)*STATE_DIM);
-    double* dX4 = (double*)malloc(sizeof(double)*STATE_DIM);
+    state Xnew; // new state
+    double* Xtmp = (double*)malloc(sizeof(double)*STATE_DIM);   // temporary state
+    double* dX1 = (double*)malloc(sizeof(double)*STATE_DIM);    // derivative 1; it represents the slope at the beginning of the interval
+    double* dX2 = (double*)malloc(sizeof(double)*STATE_DIM);    // derivative 2; it represents the slope at the midpoint of the interval
+    double* dX3 = (double*)malloc(sizeof(double)*STATE_DIM);    // derivative 3; it represents the slope at the midpoint of the interval
+    double* dX4 = (double*)malloc(sizeof(double)*STATE_DIM);    // derivative 4; it represents the slope at the end of the interval
 
-    comp_derivative(X.__data, u.__data, mu, dX1); // k1
+    comp_derivative(X.__data, u.__data, mu, dX1); // k1; compute the derivative at the beginning of the interval
 
-    propagate(X.__data, dX1, h / 2, Xtmp); // Xtmp = X + h/2 dX1
+    propagate(X.__data, dX1, h / 2, Xtmp); // Xtmp = X + h/2 dX1; compute the state at the midpoint of the interval
 
-    comp_derivative(Xtmp, u.__data, mu, dX2); // k2
+    comp_derivative(Xtmp, u.__data, mu, dX2); // k2; compute the derivative at the midpoint of the interval
 
-    propagate(X.__data, dX2, h / 2, Xtmp); // Xtmp = X + h/2 dX2
-    comp_derivative(Xtmp, u.__data, mu, dX3); // k3
+    propagate(X.__data, dX2, h / 2, Xtmp); // Xtmp = X + h/2 dX2; compute the state at the midpoint of the interval
+    comp_derivative(Xtmp, u.__data, mu, dX3); // k3; compute the derivative at the midpoint of the interval
 
-    propagate(X.__data, dX3, h, Xtmp);
-    comp_derivative(Xtmp, u.__data, mu, dX4); // k4
+    propagate(X.__data, dX3, h, Xtmp);  // Xtmp = X + h dX3; compute the state at the end of the interval
+    comp_derivative(Xtmp, u.__data, mu, dX4); // k4; compute the derivative at the end of the interval
 
-    double tau_x[4];
-    double slip_angle[4];
+    double tau_x[4];    // longitudinal slip
+    double slip_angle[4];   // slip angle
 
-    for (int i = 0; i < STATE_DIM; ++i)
+    for (int i = 0; i < STATE_DIM; ++i) // for each state variable
     {
-        Xnew.__data[i] = X.__data[i] + h / 6. * (dX1[i] + 2 * dX2[i] + 2 * dX3[i] + dX4[i]);
+        Xnew.__data[i] = X.__data[i] + h / 6. * (dX1[i] + 2 * dX2[i] + 2 * dX3[i] + dX4[i]);    // compute the new state variable
         if (i == 1 || i == 3)
         {
-            helper.__data[(int)(i-1)/2] = 1./6.*(dX1[i] + 2 * dX2[i] + 2 * dX3[i] + dX4[i]);
+            helper.__data[(int)(i-1)/2] = 1./6.*(dX1[i] + 2 * dX2[i] + 2 * dX3[i] + dX4[i]);    // compute the acceleration in the x-axis and y-axis
         }
     }
 
-    compute_slip(Xnew.__data, *u.steer, tau_x, slip_angle);
+    compute_slip(Xnew.__data, *u.steer, tau_x, slip_angle); // compute the slip ratio and slip angle
 
-    for (int i = 0; i < 4; ++i)
+    for (int i = 0; i < 4; ++i) // for each wheel
     {
-        helper.__data[2+i] = tau_x[i];
-        helper.__data[2+4+i] = slip_angle[i];
+        helper.__data[2+i] = tau_x[i];  // compute the longitudinal slip
+        helper.__data[2+4+i] = slip_angle[i];   // compute the slip angle
     }
 
-    free(Xtmp);
-    free(dX1);
-    free(dX2);
-    free(dX3);
-    free(dX4);
+    free(Xtmp); // free the memory allocated for the temporary state
+    free(dX1);  // free the memory allocated for the derivative 1
+    free(dX2);  // free the memory allocated for the derivative 2
+    free(dX3);  // free the memory allocated for the derivative 3
+    free(dX4);  // free the memory allocated for the derivative 4
 
-    return Xnew;
+    return Xnew;    // return the new state
 }
 
 /**
 *   \fn        simulate
 *   \brief     Compute the state of the vehicle at each timestep under the controls provided.
 */
-std::vector<state> simulate(state X0, std::vector<ctrl> controls, double* mu, double dt, std::vector<helper_t>& helper)
+std::vector<state> simulate(state X0, std::vector<ctrl> controls, double* mu, double dt, std::vector<helper_t>& helper)   // simulate the vehicle
 {
-    helper_t _helper;
-    std::vector<state> out;
-    out.reserve(controls.size());
-    out.push_back(X0);
-    state curState = X0;
-    for (std::vector<ctrl>::size_type i = 0; i < controls.size(); ++i)
+    helper_t _helper;   // helper_t data
+    std::vector<state> out; // output data
+    out.reserve(controls.size());   // reserve space for the output data
+    out.push_back(X0);  // add the initial state to the output data
+    state curState = X0;    // current state
+    for (std::vector<ctrl>::size_type i = 0; i < controls.size(); ++i)  // for each control
     {
-        curState = rk4(curState, controls[i], mu, dt, _helper);
-        out.push_back(curState);
-        helper.push_back(_helper);
+        curState = rk4(curState, controls[i], mu, dt, _helper);   // compute the new state
+        out.push_back(curState);    // add the new state to the output data
+        helper.push_back(_helper);  // add the helper data to the output data
     }
-    return out;
+    return out; // return the output data
 }
 
 /**
@@ -577,88 +577,88 @@ std::vector<state> simulate(state X0, std::vector<ctrl> controls, double* mu, do
 *   \brief     Run a simulation from python and return the vehicle simulated states back to python
 */
 boost::python::numpy::ndarray run(int duration, double dt, boost::python::numpy::ndarray initial_conditions_ndarray,
-                                  boost::python::numpy::ndarray controls_ndarray, boost::python::numpy::ndarray mu_ndarray)
+                                  boost::python::numpy::ndarray controls_ndarray, boost::python::numpy::ndarray mu_ndarray) // run the simulation
 {
     // mu = 1 (for each wheel) when it's sunny
     double mu[4] = {
-            boost::python::extract<double>(mu_ndarray[0]),
-            boost::python::extract<double>(mu_ndarray[1]),
-            boost::python::extract<double>(mu_ndarray[2]),
-            boost::python::extract<double>(mu_ndarray[3]),
+            boost::python::extract<double>(mu_ndarray[0]),  // friction coefficient of the front left wheel
+            boost::python::extract<double>(mu_ndarray[1]),  // friction coefficient of the front right wheel
+            boost::python::extract<double>(mu_ndarray[2]),  // friction coefficient of the rear left wheel
+            boost::python::extract<double>(mu_ndarray[3]),  // friction coefficient of the rear right wheel
     };
 
     // Initial state of the vehicle
     state state_X_init;
     // Xg Vx Yg Vy Zg Vz roll droll pitch dpitch yaw dyaw omega1 omega2 omega3 omega4 ax ay sr1 sr2 sr3 sr4 sa1 sa2 sa3 sa4 u1 u2 u3 u4 delta
-    double x = boost::python::extract<double>(initial_conditions_ndarray[0]);
-    double vx = boost::python::extract<double>(initial_conditions_ndarray[1]);
-    double y = boost::python::extract<double>(initial_conditions_ndarray[2]);
-    double vy = boost::python::extract<double>(initial_conditions_ndarray[3]);
-    double z = boost::python::extract<double>(initial_conditions_ndarray[4]);
-    double vz = boost::python::extract<double>(initial_conditions_ndarray[5]);
-    double r = boost::python::extract<double>(initial_conditions_ndarray[6]);
-    double vr = boost::python::extract<double>(initial_conditions_ndarray[7]);
-    double p = boost::python::extract<double>(initial_conditions_ndarray[8]);
-    double vp = boost::python::extract<double>(initial_conditions_ndarray[9]);
-    double yaw = boost::python::extract<double>(initial_conditions_ndarray[10]);
-    double vyaw = boost::python::extract<double>(initial_conditions_ndarray[11]);
-    *state_X_init.x = x;
-    *state_X_init.vx = vx;
-    *state_X_init.y = y;
-    *state_X_init.vy = vy;
-    *state_X_init.z = z;
-    *state_X_init.vz = vz;
-    *state_X_init.r = r;
-    *state_X_init.vr = vr;
-    *state_X_init.p = p;
-    *state_X_init.vp = vp;
-    *state_X_init.yaw = yaw;
-    *state_X_init.vyaw = vyaw;
-    *state_X_init.om_fl = *state_X_init.vx / params::r_eff;
-    *state_X_init.om_fr = *state_X_init.vx / params::r_eff;
-    *state_X_init.om_rl = *state_X_init.vx / params::r_eff;
-    *state_X_init.om_rr = *state_X_init.vx / params::r_eff;
+    double x = boost::python::extract<double>(initial_conditions_ndarray[0]);   // x position
+    double vx = boost::python::extract<double>(initial_conditions_ndarray[1]);  // x velocity
+    double y = boost::python::extract<double>(initial_conditions_ndarray[2]);   // y position
+    double vy = boost::python::extract<double>(initial_conditions_ndarray[3]);  // y velocity
+    double z = boost::python::extract<double>(initial_conditions_ndarray[4]);   // z position
+    double vz = boost::python::extract<double>(initial_conditions_ndarray[5]);  // z velocity
+    double r = boost::python::extract<double>(initial_conditions_ndarray[6]);   // roll
+    double vr = boost::python::extract<double>(initial_conditions_ndarray[7]);  // roll velocity
+    double p = boost::python::extract<double>(initial_conditions_ndarray[8]);   // pitch
+    double vp = boost::python::extract<double>(initial_conditions_ndarray[9]);  // pitch velocity
+    double yaw = boost::python::extract<double>(initial_conditions_ndarray[10]);    // yaw
+    double vyaw = boost::python::extract<double>(initial_conditions_ndarray[11]);   // yaw velocity
+    *state_X_init.x = x;    // x position
+    *state_X_init.vx = vx;  // x velocity
+    *state_X_init.y = y;    // y position
+    *state_X_init.vy = vy;  // y velocity
+    *state_X_init.z = z;    // z position
+    *state_X_init.vz = vz;  // z velocity
+    *state_X_init.r = r;    // roll
+    *state_X_init.vr = vr;  // roll velocity
+    *state_X_init.p = p;    // pitch
+    *state_X_init.vp = vp;  // pitch velocity
+    *state_X_init.yaw = yaw;    // yaw
+    *state_X_init.vyaw = vyaw;  // yaw velocity
+    *state_X_init.om_fl = *state_X_init.vx / params::r_eff;   // angular velocity of the front left wheel
+    *state_X_init.om_fr = *state_X_init.vx / params::r_eff;  // angular velocity of the front right wheel
+    *state_X_init.om_rl = *state_X_init.vx / params::r_eff; // angular velocity of the rear left wheel
+    *state_X_init.om_rr = *state_X_init.vx / params::r_eff; // angular velocity of the rear right wheel
 
     // Controls to apply at each timestep
     std::vector<ctrl> my_ctrls;
-    std::vector<helper_t> my_helpers;
-    for (int i = 0; i < duration; ++i)
+    std::vector<helper_t> my_helpers;   // helper data
+    for (int i = 0; i < duration; ++i)  // for each timestep
     {
-        if (controls_ndarray.get_nd() == 1 && controls_ndarray.shape(0) == 5)
+        if (controls_ndarray.get_nd() == 1 && controls_ndarray.shape(0) == 5)   // if the controls are constant
         {
             // constant control to apply
             ctrl m_ctrl;
-            double T_front_left = boost::python::extract<double>(controls_ndarray[0]);
-            double T_front_right = boost::python::extract<double>(controls_ndarray[1]);
-            double T_back_left = boost::python::extract<double>(controls_ndarray[2]);
-            double T_back_right = boost::python::extract<double>(controls_ndarray[3]);
-            double steer = boost::python::extract<double>(controls_ndarray[4]);
-            m_ctrl.T[0] = T_front_left;
-            m_ctrl.T[1] = T_front_right;
-            m_ctrl.T[2] = T_back_left;
-            m_ctrl.T[3] = T_back_right;
-            *m_ctrl.steer = steer;
-            my_ctrls.push_back(m_ctrl);
+            double T_front_left = boost::python::extract<double>(controls_ndarray[0]);  // torque of the front left wheel
+            double T_front_right = boost::python::extract<double>(controls_ndarray[1]); // torque of the front right wheel
+            double T_back_left = boost::python::extract<double>(controls_ndarray[2]);   // torque of the rear left wheel
+            double T_back_right = boost::python::extract<double>(controls_ndarray[3]);  // torque of the rear right wheel
+            double steer = boost::python::extract<double>(controls_ndarray[4]); // steering angle
+            m_ctrl.T[0] = T_front_left; // torque of the front left wheel
+            m_ctrl.T[1] = T_front_right;    // torque of the front right wheel
+            m_ctrl.T[2] = T_back_left;  // torque of the rear left wheel
+            m_ctrl.T[3] = T_back_right; // torque of the rear right wheel
+            *m_ctrl.steer = steer;  // steering angle
+            my_ctrls.push_back(m_ctrl); // add the control to the controls to apply
         }
-        else if (controls_ndarray.get_nd() == 2 && controls_ndarray.shape(0) == duration && controls_ndarray.shape(1) == 5)
+        else if (controls_ndarray.get_nd() == 2 && controls_ndarray.shape(0) == duration && controls_ndarray.shape(1) == 5)   // if the controls are time-varying
         {
             // this timestep's control to apply
-            double T_front_left = boost::python::extract<double>(controls_ndarray[i][0]);
-            double T_front_right = boost::python::extract<double>(controls_ndarray[i][1]);
-            double T_back_left = boost::python::extract<double>(controls_ndarray[i][2]);
-            double T_back_right = boost::python::extract<double>(controls_ndarray[i][3]);
-            double steer = boost::python::extract<double>(controls_ndarray[i][4]);
-            ctrl m_ctrl;
-            m_ctrl.T[0] = T_front_left;
-            m_ctrl.T[1] = T_front_right;
-            m_ctrl.T[2] = T_back_left;
-            m_ctrl.T[3] = T_back_right;
-            *m_ctrl.steer = steer;
-            my_ctrls.push_back(m_ctrl);
+            double T_front_left = boost::python::extract<double>(controls_ndarray[i][0]);   // torque of the front left wheel
+            double T_front_right = boost::python::extract<double>(controls_ndarray[i][1]);  // torque of the front right wheel
+            double T_back_left = boost::python::extract<double>(controls_ndarray[i][2]);    // torque of the rear left wheel
+            double T_back_right = boost::python::extract<double>(controls_ndarray[i][3]);   // torque of the rear right wheel
+            double steer = boost::python::extract<double>(controls_ndarray[i][4]);  // steering angle
+            ctrl m_ctrl;    // control to apply
+            m_ctrl.T[0] = T_front_left; // torque of the front left wheel
+            m_ctrl.T[1] = T_front_right;    // torque of the front right wheel
+            m_ctrl.T[2] = T_back_left;  // torque of the rear left wheel
+            m_ctrl.T[3] = T_back_right; // torque of the rear right wheel
+            *m_ctrl.steer = steer;  // steering angle
+            my_ctrls.push_back(m_ctrl); // add the control to the controls to apply
         }
         else {
-            cerr << "The controls you provide are not formatted as they should." << endl;
-            exit(EXIT_FAILURE);
+            cerr << "The controls you provide are not formatted as they should." << endl;   // print an error message
+            exit(EXIT_FAILURE); // exit the program
         }
     }
 
@@ -666,74 +666,74 @@ boost::python::numpy::ndarray run(int duration, double dt, boost::python::numpy:
     std::vector<state> res_states = simulate(state_X_init, my_ctrls, mu, dt, my_helpers);
 
     // Return values in a python numpy array
-    boost::python::tuple shape = boost::python::make_tuple(duration, 1 + STATE_DIM + HELPER_T_DIM);
-    boost::python::numpy::dtype dtype = boost::python::numpy::dtype::get_builtin<float>();
-    boost::python::numpy::ndarray res_numpy_array = boost::python::numpy::zeros(shape, dtype);
-    for (int i = 0; i < duration; i += 1)
+    boost::python::tuple shape = boost::python::make_tuple(duration, 1 + STATE_DIM + HELPER_T_DIM);   // shape of the numpy array
+    boost::python::numpy::dtype dtype = boost::python::numpy::dtype::get_builtin<float>();  // data type of the numpy array
+    boost::python::numpy::ndarray res_numpy_array = boost::python::numpy::zeros(shape, dtype);  // numpy array to return
+    for (int i = 0; i < duration; i += 1)   // for each timestep
     {
         // elapsed time
-        res_numpy_array[i][0] = i * dt;
+        res_numpy_array[i][0] = i * dt; // elapsed time
         // state
-        res_numpy_array[i][1] = *res_states[i].x;
-        res_numpy_array[i][2] = *res_states[i].vx;
-        res_numpy_array[i][3] = *res_states[i].y;
-        res_numpy_array[i][4] = *res_states[i].vy;
-        res_numpy_array[i][5] = *res_states[i].z;
-        res_numpy_array[i][6] = *res_states[i].vz;
-        res_numpy_array[i][7] = *res_states[i].r;
-        res_numpy_array[i][8] = *res_states[i].vr;
-        res_numpy_array[i][9] = *res_states[i].p;
-        res_numpy_array[i][10] = *res_states[i].vp;
-        res_numpy_array[i][11] = *res_states[i].yaw;
-        res_numpy_array[i][12] = *res_states[i].vyaw;
-        res_numpy_array[i][13] = *res_states[i].om_fl;
-        res_numpy_array[i][14] = *res_states[i].om_fr;
-        res_numpy_array[i][15] = *res_states[i].om_rl;
-        res_numpy_array[i][16] = *res_states[i].om_rr;
+        res_numpy_array[i][1] = *res_states[i].x;   // x position
+        res_numpy_array[i][2] = *res_states[i].vx;  // x velocity
+        res_numpy_array[i][3] = *res_states[i].y;   // y position
+        res_numpy_array[i][4] = *res_states[i].vy;  // y velocity
+        res_numpy_array[i][5] = *res_states[i].z;   // z position
+        res_numpy_array[i][6] = *res_states[i].vz;  // z velocity
+        res_numpy_array[i][7] = *res_states[i].r;   // roll
+        res_numpy_array[i][8] = *res_states[i].vr;  // roll velocity
+        res_numpy_array[i][9] = *res_states[i].p;   // pitch
+        res_numpy_array[i][10] = *res_states[i].vp; // pitch velocity
+        res_numpy_array[i][11] = *res_states[i].yaw;    // yaw
+        res_numpy_array[i][12] = *res_states[i].vyaw;   // yaw velocity
+        res_numpy_array[i][13] = *res_states[i].om_fl;  // angular velocity of the front left wheel
+        res_numpy_array[i][14] = *res_states[i].om_fr;  // angular velocity of the front right wheel
+        res_numpy_array[i][15] = *res_states[i].om_rl;  // angular velocity of the rear left wheel
+        res_numpy_array[i][16] = *res_states[i].om_rr;  // angular velocity of the rear right wheel
         // additional state
-        res_numpy_array[i][17] = *my_helpers[i].ax;
-        res_numpy_array[i][18] = *my_helpers[i].ay;
-        res_numpy_array[i][19] = *my_helpers[i].sr1;
-        res_numpy_array[i][20] = *my_helpers[i].sr2;
-        res_numpy_array[i][21] = *my_helpers[i].sr3;
-        res_numpy_array[i][22] = *my_helpers[i].sr4;
-        res_numpy_array[i][23] = *my_helpers[i].sa1;
-        res_numpy_array[i][24] = *my_helpers[i].sa2;
-        res_numpy_array[i][25] = *my_helpers[i].sa3;
-        res_numpy_array[i][26] = *my_helpers[i].sa4;
+        res_numpy_array[i][17] = *my_helpers[i].ax; // acceleration in the x-axis
+        res_numpy_array[i][18] = *my_helpers[i].ay; // acceleration in the y-axis
+        res_numpy_array[i][19] = *my_helpers[i].sr1;    // slip ratio of the front left wheel
+        res_numpy_array[i][20] = *my_helpers[i].sr2;    // slip ratio of the front right wheel
+        res_numpy_array[i][21] = *my_helpers[i].sr3;    // slip ratio of the rear left wheel
+        res_numpy_array[i][22] = *my_helpers[i].sr4;    // slip ratio of the rear right wheel
+        res_numpy_array[i][23] = *my_helpers[i].sa1;    // slip angle of the front left wheel
+        res_numpy_array[i][24] = *my_helpers[i].sa2;    // slip angle of the front right wheel
+        res_numpy_array[i][25] = *my_helpers[i].sa3;    // slip angle of the rear left wheel
+        res_numpy_array[i][26] = *my_helpers[i].sa4;    // slip angle of the rear right wheel
     }
-    return res_numpy_array;
+    return res_numpy_array; // return the numpy array
 }
 
 /**
 *   \fn        cpp_version
 *   \brief     Get the C++ code compilation date and time as a python string
 */
-boost::python::object cpp_version()
+boost::python::object cpp_version() // get the C++ code compilation date and time
 {
-    time_t rawtime;
-    struct tm * timeinfo;
-    char buffer[80];
+    time_t rawtime; // raw time
+    struct tm * timeinfo;   // time information
+    char buffer[80];    // buffer
 
-    time (&rawtime);
-    timeinfo = localtime(&rawtime);
+    time (&rawtime);    // get the raw time
+    timeinfo = localtime(&rawtime); // get the time information
 
-    strftime(buffer,sizeof(buffer),"%d-%m-%Y %H:%M:%S",timeinfo);
-    std::string str(buffer);
+    strftime(buffer,sizeof(buffer),"%d-%m-%Y %H:%M:%S",timeinfo);   // format the time
+    std::string str(buffer);    // convert the time to a string
 
-    return boost::python::str("Compiled on " + str);
+    return boost::python::str("Compiled on " + str);    // return the time as a python string
 }
 
 /**
 *   BOOST_PYTHON_MODULE
 *   \brief     Expose the c++ functions to python
-*   Important: the name provided to the macro (i.e. vehiclesim) must match the name of the .so generated file
+*   Important: the name provided to the macro (i.e. vehiclemodel) must match the name of the .so generated file
 *   Important: initialize boost before defining the functions exposed
 */
-BOOST_PYTHON_MODULE(vehiclesim)
+BOOST_PYTHON_MODULE(vehiclemodel)   // expose the c++ functions to python
         {
-                Py_Initialize();
-        boost::python::numpy::initialize();
-        def("run", run);
-        def("cpp_version", cpp_version);
+                Py_Initialize();    // initialize python
+        boost::python::numpy::initialize(); // initialize numpy
+        def("run", run);    // run the simulation
+        def("cpp_version", cpp_version);    // get the C++ code compilation date and time
         }
